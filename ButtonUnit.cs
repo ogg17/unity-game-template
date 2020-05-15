@@ -6,32 +6,32 @@ namespace Main
 {
     public abstract class ButtonUnit : BaseUnit, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
-        public Color32 ButtonColor { get; set; }
-        public Color32 ClickColor { get; set; }
-    
+        public Color buttonColor;
+        public Color clickColor;
+        
         private Image buttonImage;
         private bool isDown = false;
-        private float offsetColor = 0.05f;
+        private float offsetColor = 0.001f;
         private float time = 0.03f;
     
         public override void OnStart()
         {
             buttonImage = GetComponent<Image>();
-            ButtonColor = new Color32(249, 249, 249, 255);
-            ClickColor = new Color32(192, 192, 192, 255);
+            buttonColor = buttonImage.color;
+            clickColor = buttonImage.color - new Color32(32,32,32,0);
         }
 
         public override void OnUpdate()
         {
-            if(!isDown && buttonImage.color.r < ButtonColor.r - offsetColor) 
-                buttonImage.color = Color.Lerp(buttonImage.color, ButtonColor, time);
+            if(!isDown && buttonImage.color.r < buttonColor.r - offsetColor) 
+                buttonImage.color = Color.Lerp(buttonImage.color, buttonColor, time);
         }
 
         public void OnPointerClick(PointerEventData eventData) => OnClick();
         public void OnPointerDown(PointerEventData eventData)
         {
             OnDown();
-            buttonImage.color = ClickColor;
+            buttonImage.color = clickColor;
             isDown = true;
         }
 

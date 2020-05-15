@@ -6,7 +6,11 @@ namespace Main
     public class DataBus : MonoBehaviour
     {
         public static readonly Dictionary<string, LocalData> Data = new Dictionary<string, LocalData>();
-        public static T GetData<T>() where T: LocalData => Data[nameof(T)] as T;
+
+        public static T GetData<T>(string key) where T : LocalData
+        {
+            return Data[key] as T;
+        }
 
         private void Start()
         {
