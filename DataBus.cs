@@ -1,46 +1,43 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class DataBus : MonoBehaviour
+namespace Main
 {
-    public static Dictionary<string, LocalData> Datas = new Dictionary<string, LocalData>();
-    public static T GetData<T>() where T: LocalData => Datas[LocalData.Key] as T;
-
-    private void Start()
+    public class DataBus : MonoBehaviour
     {
-        foreach (var data in Datas)
+        public static readonly Dictionary<string, LocalData> Data = new Dictionary<string, LocalData>();
+        public static T GetData<T>() where T: LocalData => Data[nameof(T)] as T;
+
+        private void Start()
         {
-            data.Value.OnStart();
+            foreach (var data in Data)
+            {
+                data.Value.OnStart();
+            }
+        }
+
+        public static void Save()
+        {
+            foreach (var data in Data)
+            {
+                data.Value.Save();
+            }
+        }
+
+        public static void Load()
+        {
+            foreach (var data in Data)
+            {
+                data.Value.Load();
+            }
         }
     }
 
-    public static void Save()
+    public abstract class LocalData: MonoBehaviour
     {
-        foreach (var data in Datas)
-        {
-            data.Value.Save();
-        }
+        protected void Init(string key) => DataBus.Data.Add(key, this);
+        public virtual void OnStart() { }
+        public virtual void Save() { }
+        public virtual void Load() { }
     }
-
-    public static void Load()
-    {
-        foreach (var data in Datas)
-        {
-            data.Value.Load();
-        }
-    }
-}
-
-public abstract class LocalData
-{
-    public static string Key { get; private set; }
-    public void Init(string key)
-    {
-        Key = key;
-        DataBus.Datas.Add(Key, this);
-    }
-        
-    public virtual void OnStart() { }
-    public virtual void Save() { }
-    public virtual void Load() { }
 }

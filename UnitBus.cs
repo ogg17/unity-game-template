@@ -1,45 +1,55 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitBus : MonoBehaviour
+namespace Main
 {
-    public static readonly Dictionary<string, BaseUnit> Units = new Dictionary<string, BaseUnit>();
-    public static T GetUnit<T>() where T: BaseUnit => Units[BaseUnit.Key] as T;
+    public class UnitBus : MonoBehaviour
+    {
+        public static readonly Dictionary<string, BaseUnit> Units = new Dictionary<string, BaseUnit>();
+        public static T GetUnit<T>() where T: BaseUnit => Units[nameof(T)] as T;
+        public static T GetUnit<T>(string addKey) where T: BaseUnit => Units[nameof(T) + "_" + addKey] as T;
 
-    private void Start()
-    {
-        foreach (var unit in Units)
+        private void Start()
         {
-            unit.Value.OnStart();
+            foreach (var unit in Units)
+            {
+                unit.Value.OnStart();
+            }
+            InvokeRepeating(nameof(OneSecondUpdate), 1.0f, 1.0f);
         }
-    }
 
-    private void Update()
-    {
-        foreach (var unit in Units)
+        private void Update()
         {
-            unit.Value.OnUpdate();
+            foreach (var unit in Units)
+            {
+                unit.Value.OnUpdate();
+            }
+        }
+        private void FixedUpdate()
+        {
+            foreach (var unit in Units)
+            {
+                unit.Value.OnFixedUpdate();
+            }
+        }
+
+        private void OneSecondUpdate()
+        {
+            foreach (var unit in Units)
+            {
+                unit.Value.OnOneSecondUpdate();
+            }
         }
     }
-    private void FixedUpdate()
-    {
-        foreach (var unit in Units)
-        {
-            unit.Value.OnFixedUpdate();
-        }
-    }
-}
     
-[System.Serializable]
-public abstract class BaseUnit : MonoBehaviour
-{
-    public static string Key {get; private set; }
-    protected void Init(string key)
+    [System.Serializable]
+    public abstract class BaseUnit : MonoBehaviour
     {
-        Key = key;
-        UnitBus.Units.Add(Key, this);
+        protected void Init(string key) => UnitBus.Units.Add(key, this);
+        protected void Init(string key, string addKey) => UnitBus.Units.Add(key + "_" + addKey, this);
+        public virtual void OnStart() { }
+        public virtual void OnUpdate() { }
+        public virtual void OnFixedUpdate() { }
+        public virtual void OnOneSecondUpdate() { }
     }
-    public virtual void OnStart() { }
-    public virtual void OnUpdate() { }
-    public virtual void OnFixedUpdate() { }
 }
