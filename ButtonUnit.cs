@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Main
 {
+    [RequireComponent(typeof(Image))]
     public abstract class ButtonUnit : BaseUnit, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
         public Color buttonColor;
@@ -11,14 +12,15 @@ namespace Main
         
         private Image buttonImage;
         private bool isDown = false;
-        private float offsetColor = 0.001f;
-        private float time = 0.03f;
+        private readonly float offsetColor = 0.001f;
+        private readonly float time = 0.03f;
     
         public override void OnStart()
         {
             buttonImage = GetComponent<Image>();
-            buttonColor = buttonImage.color;
-            clickColor = buttonImage.color - new Color32(32,32,32,0);
+            var color = buttonImage.color;
+            buttonColor = color;
+            clickColor = color - new Color32(32,32,32,0);
         }
 
         public override void OnUpdate()

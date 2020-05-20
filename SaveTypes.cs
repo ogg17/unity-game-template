@@ -13,7 +13,7 @@ namespace Main
         private readonly int index;
         private readonly string keySave; // unique key for instance 
 
-        protected static List<string> keys = new List<string>();
+        private static readonly List<string> keys = new List<string>();
         protected SaveType(string keySave, T value)
         {
             Value = value;
@@ -24,7 +24,7 @@ namespace Main
             this.keySave = keySave;
         }
 
-        public string GetKeySave() => keySave + "_" + keyType + "_" + index; // return completely key for save and load variable.
+        protected string GetKeySave() => keySave + "_" + keyType + "_" + index; // return completely key for save and load variable.
         public virtual void Save() { }
         public virtual void Load() { }
     }
