@@ -7,10 +7,8 @@ namespace Main
     {
         public static readonly Dictionary<string, LocalData> Data = new Dictionary<string, LocalData>();
 
-        public static T GetData<T>(string key) where T : LocalData
-        {
-            return Data[key] as T;
-        }
+        public static T GetData<T>() where T : LocalData => Data[typeof(T).Name] as T;
+        
 
         private void Start()
         {
@@ -37,9 +35,9 @@ namespace Main
         }
     }
 
-    public abstract class LocalData: MonoBehaviour
+    public abstract class LocalData: ScriptableObject
     {
-        protected void Init(string key) => DataBus.Data.Add(key, this);
+        protected void Init() => DataBus.Data.Add(GetType().Name, this);
         public virtual void OnStart() { }
         public virtual void Save() { }
         public virtual void Load() { }

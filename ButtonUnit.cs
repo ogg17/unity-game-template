@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace Main
         private bool isDown = false;
         private readonly float offsetColor = 0.001f;
         private readonly float time = 0.03f;
-    
+
         public override void OnStart()
         {
             buttonImage = GetComponent<Image>();
